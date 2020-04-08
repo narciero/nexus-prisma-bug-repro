@@ -3,7 +3,7 @@
 1. `yarn install`
 1. `yarn build`
 
-# Expected output
+## Expected output
 During `yarn build`, the `prisma generate` command should succeed, but then when generating `nexus` types you should see the following error
 ````
 $ NODE_ENV=development ts-node-dev --transpileOnly src/schema
@@ -29,4 +29,16 @@ node_modules/@types/nexus-typegen/index.d.ts:205:28 - error TS2339: Property 'Pr
 205       data: NexusGenInputs['ProfileUpdateManyMutationInput']; // ProfileUpdateManyMutationInput!
                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+````
+
+## Fix
+If you add a scalar field to the `Profile` model, the `build` command will succeed.
+````prisma
+model Profile {
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id])
+  info   Info   @relation(fields: [infoId], references: [id])
+  infoId String
+  // test String // if I just add this dummy field, everything works again
+}
 ````
